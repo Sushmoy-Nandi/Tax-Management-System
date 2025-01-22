@@ -169,7 +169,7 @@ SELECT c.NID, c.Name, SUM(tp.PaymentAmount) AS TotalTaxPaid
 FROM Citizen c
 JOIN Tax t ON c.NID = t.NID
 JOIN TaxPayment tp ON t.TaxID = tp.TaxID
-WHERE c.NID = 111
+WHERE c.NID = 105
 GROUP BY c.NID, c.Name;
 ```
 
