@@ -118,3 +118,133 @@ CREATE TABLE Audit (
     FOREIGN KEY (ChangedBy) REFERENCES Users(UserID) ON DELETE SET NULL
 );
 ```
+
+## CRUD Operation
+
+Below is an example of performing **CRUD (Create, Read, Update, Delete)** operations for the `tax_management_system` database:
+
+### **1. CREATE Operation**
+Add a new citizen and their related data in the `Address`, `Citizen`, and `Tax` tables.
+
+```sql
+-- Insert into Address
+INSERT INTO Address (AddressID, Street, City, State, PostalCode, Country)
+VALUES 
+(11, 'New Market Road', 'Dhaka', 'Dhaka Division', '1215', 'Bangladesh');
+
+-- Insert into Citizen
+INSERT INTO Citizen (NID, Name, DateOfBirth, Gender, AddressID, PhoneNumber, Email)
+VALUES 
+(111, 'Rafiqul Islam', '1992-05-14', 'Male', 11, '01712345678', 'rafiqulislam@example.com');
+
+-- Insert into Tax
+INSERT INTO Tax (TaxID, NID, TaxType, TaxDescription, TaxBaseAmount, TaxRateID, TaxAmount, DueDate)
+VALUES 
+(11, 111, 'Income Tax', 'Tax on annual salary', 600000.00, 1, 60000.00, '2024-04-30');
+```
+
+---
+
+### **2. READ Operation**
+Retrieve specific or all records from various tables.
+
+- Retrieve all citizens from Dhaka:
+```sql
+SELECT c.NID, c.Name, c.Email, a.Street, a.City
+FROM Citizen c
+JOIN Address a ON c.AddressID = a.AddressID
+WHERE a.City = 'Dhaka';
+```
+
+- Retrieve all unpaid taxes with a due date in the future:
+```sql
+SELECT t.TaxID, t.NID, t.TaxType, t.TaxAmount, t.DueDate
+FROM Tax t
+WHERE t.DueDate > CURRENT_DATE;
+```
+
+- Retrieve total taxes paid by a specific citizen:
+```sql
+SELECT c.NID, c.Name, SUM(tp.PaymentAmount) AS TotalTaxPaid
+FROM Citizen c
+JOIN Tax t ON c.NID = t.NID
+JOIN TaxPayment tp ON t.TaxID = tp.TaxID
+WHERE c.NID = 111
+GROUP BY c.NID, c.Name;
+```
+
+---
+
+### **3. UPDATE Operation**
+Update details for an existing record.
+
+- Update phone number and email for a citizen:
+```sql
+UPDATE Citizen
+SET PhoneNumber = '01876543210', Email = 'updatedrafiqul@example.com'
+WHERE NID = 111;
+```
+
+- Update tax amount for a specific tax record:
+```sql
+UPDATE Tax
+SET TaxAmount = 65000.00
+WHERE TaxID = 11;
+```
+
+- Extend expiry date for a tax rate:
+```sql
+UPDATE TaxRates
+SET ExpiryDate = '2026-12-31'
+WHERE TaxRateID = 1;
+```
+
+---
+
+### **4. DELETE Operation**
+Remove specific records from tables.
+
+- Delete a citizen and their associated taxes:
+```sql
+DELETE FROM Citizen
+WHERE NID = 111;
+```
+> **Note**: `ON DELETE CASCADE` will automatically remove related `Tax` records for the citizen.
+
+- Delete a tax rate that is no longer valid:
+```sql
+DELETE FROM TaxRates
+WHERE TaxRateID = 10;
+```
+
+- Remove a tax payment record:
+```sql
+DELETE FROM TaxPayment
+WHERE PaymentID = 1;
+```
+
+---
+
+### Testing the CRUD Operations
+Verify the results of these operations using `SELECT` queries:
+
+- Check if the citizen was added successfully:
+```sql
+SELECT * FROM Citizen WHERE NID = 111;
+```
+
+- Verify the updated tax amount:
+```sql
+SELECT * FROM Tax WHERE TaxID = 11;
+```
+
+- Ensure that the citizen and related taxes were deleted:
+```sql
+SELECT * FROM Citizen WHERE NID = 111;
+SELECT * FROM Tax WHERE NID = 111;
+```
+
+- Confirm if the tax payment record was removed:
+```sql
+SELECT * FROM TaxPayment WHERE PaymentID = 1;
+```
