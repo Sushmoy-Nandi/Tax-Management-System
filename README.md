@@ -10,7 +10,7 @@ This project demonstrates the implementation of a Tax Management System using SQ
 
 ## Objectives
 
-1. **Set up the Tax Management System Database**: Create and populate the database with tables for branch, employee, member, books, issued status, and return status.
+1. **Set up the Tax Management System Database**: Create and populate the database with tables for Citizen, Address, TaxRates, Tax, TaxPayment, Audit, UserRoles, Users.
 2. **CRUD Operations**: Perform Create, Read, Update, and Delete operations on the data.
 3. **CTAS (Create Table As Select)**: Utilize CTAS to create new tables based on query results.
 4. **Advanced SQL Queries**: Develop complex queries to analyze and retrieve specific data.
