@@ -4,7 +4,7 @@
 
 **Project Title**: Tax Management System
 
-This project demonstrates the implementation of a Library Management System using SQL. It includes creating and managing tables, performing CRUD operations, and executing advanced SQL queries. The goal is to showcase skills in database design, manipulation, and querying.
+This project demonstrates the implementation of a Tax Management System using SQL. It includes creating and managing tables, performing CRUD operations, and executing advanced SQL queries. The goal is to showcase skills in database design, manipulation, and querying.
 
 ![ERD](https://github.com/Sushmoy-Nandi/Tax-Management-System-/blob/main/Tax_Management_System_ERD.png)
 
