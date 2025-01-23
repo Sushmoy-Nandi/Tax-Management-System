@@ -248,3 +248,7 @@ SELECT * FROM Tax WHERE NID = 111;
 ```sql
 SELECT * FROM TaxPayment WHERE PaymentID = 1;
 ```
+
+
+## Project Details
+This project was developed during the 4th semester while pursing B.Sc. in CSE of 2024 as part of the CSE-2211: Database Management Systems-I Lab Course conducted by the National Institute of Textile Engineering and Research-NITER, Constituent Institute of the University of Dhaka, Savar, Dhaka-1350
