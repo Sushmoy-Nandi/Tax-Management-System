@@ -10,10 +10,12 @@ This project demonstrates the implementation of a Tax Management System using SQ
 
 ## Objectives
 
-1. **Set up the Tax Management System Database**: Create and populate the database with tables for Citizen, Address, TaxRates, Tax, TaxPayment, Audit, UserRoles, Users.
+1. **Set up the Tax Management System Database**: Create and populate the database `tax_management_system` with tables for Citizen, Address, TaxRates, Tax, TaxPayment, Audit, UserRoles, Users.
 2. **CRUD Operations**: Perform Create, Read, Update, and Delete operations on the data.
-<!-- 3. **CTAS (Create Table As Select)**: Utilize CTAS to create new tables based on query results.
-4. **Advanced SQL Queries**: Develop complex queries to analyze and retrieve specific data. -->
+3. **CTAS (Create Table As Select)**: Utilize CTAS to create new tables based on query results.
+4. **Search Records**: Search for specific records in the database.
+5. **Export to CSV**: Export the contents of a table to a CSV file for external use.
+
 
 ## Project Structure
 
@@ -252,3 +254,10 @@ SELECT * FROM TaxPayment WHERE PaymentID = 1;
 
 ## Project Details
 This project was developed during the 4th semester while pursing B.Sc. in CSE of 2024 as part of the CSE-2211: Database Management Systems-I Lab Course conducted by the National Institute of Textile Engineering and Research-NITER, Constituent Institute of the University of Dhaka, Savar, Dhaka-1350
+
+## Future work
+**Advanced SQL Queries**: Develop complex queries to analyze and retrieve specific data.In Future Its advanced queries and data analytics enable efficient tax collection, ensure accountability, and provide actionable insights for decision-making.
+
+## Conclusion
+
+The Tax Management System provides a robust SQL-based framework for managing taxes, payments, and compliance. The Database Management Console provides an efficient and user-friendly way to perform essential database operations through a command-line interface. Its comprehensive menu allows users to create, manage, and manipulate database tables seamlessly. With features like exporting data to CSV and creating tables using queries (CTAS), this tool simplifies complex database tasks for developers, students, and professionals alike. This project demonstrates proficiency in database design, manipulation, and querying, addressing real-world administrative needs.  
