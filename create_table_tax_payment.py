@@ -12,16 +12,19 @@ mydbconnection=mysql.connector.connect(
 mycursor = mydbconnection.cursor()
 
 sqlquery = """
-           CREATE TABLE TaxPayment 
-                (
-                    PaymentID INT PRIMARY KEY,
-                    TaxID INT,
-                    PaymentDate DATE,
-                    PaymentAmount DECIMAL(10, 2),
-                    PaymentMethod VARCHAR(50),
-                    FOREIGN KEY (TaxID) REFERENCES Tax(TaxID) ON DELETE CASCADE
-                )
+CREATE TABLE TaxPayment (
+    TaxID INT PRIMARY KEY AUTO_INCREMENT,
+    TaxPayerID INT,
+    NID INT NULL,
+    TaxType TEXT,
+    TaxAmount DECIMAL(10, 2),
+    PaidAmount DECIMAL(10, 2) DEFAULT 0,
+    DueAmount DECIMAL(10, 2) AS (TaxAmount - PaidAmount) STORED,
+    DueDate DATE,
+    FOREIGN KEY (NID) REFERENCES UserSignup(NID) ON DELETE CASCADE,
+    FOREIGN KEY (TaxPayerID) REFERENCES TaxPayers(TaxPayerID) 
+);
             """
 
 mycursor.execute(sqlquery)
-print("Create tax payment table successful")
+print("Create TaxPayment table successful")
