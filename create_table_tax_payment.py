@@ -14,16 +14,15 @@ mycursor = mydbconnection.cursor()
 sqlquery = """
 CREATE TABLE TaxPayment (
     TaxID INT PRIMARY KEY AUTO_INCREMENT,
-    TaxPayerID INT,
     NID INT NULL,
-    TaxType TEXT,
+    TaxType ENUM('Land Tax', 'Income Tax', 'Business Tax') NOT NULL,  -- Use ENUM for better control over types
     TaxAmount DECIMAL(10, 2),
     PaidAmount DECIMAL(10, 2) DEFAULT 0,
     DueAmount DECIMAL(10, 2) AS (TaxAmount - PaidAmount) STORED,
     DueDate DATE,
-    FOREIGN KEY (NID) REFERENCES UserSignup(NID) ON DELETE CASCADE,
-    FOREIGN KEY (TaxPayerID) REFERENCES TaxPayers(TaxPayerID) 
+    FOREIGN KEY (NID) REFERENCES UserSignup(NID) ON DELETE CASCADE
 );
+
             """
 
 mycursor.execute(sqlquery)
