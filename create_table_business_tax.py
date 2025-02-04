@@ -18,7 +18,8 @@ sqlquery = """
                 BusinessName VARCHAR(255),  -- Name of the business
                 BusinessType VARCHAR(100),  -- Type of business (e.g., Retail, Manufacturing)
                 AnnualRevenue DECIMAL(10, 2),  -- Total revenue for the year
-                TaxPayerNID INT
+                TaxPayerNID INT,
+                FOREIGN KEY (TaxPayerNID) REFERENCES UserSignup(NID)
             );
 
             """
