@@ -160,6 +160,9 @@ CREATE TABLE BusinessTax (
 
 3.  **Run the application:** Execute the `main.py` script to start the system.
 
+
+[Python & MySQL Setup Guide Step by Step](https://docs.google.com/document/d/1NQQRdBi6nZessjha4bQrM0QTBIzSn9dvFePb6CLNQ6k/edit?tab=t.0)
+
 ## Project Details
 This project was developed during the 4th semester while pursing B.Sc. in CSE of 2024 as part of the CSE-2211: Database Management Systems-I Lab Course conducted by the National Institute of Textile Engineering and Research-NITER, Constituent Institute of the University of Dhaka, Savar, Dhaka-1350
 
