@@ -42,7 +42,7 @@ This project demonstrates the implementation of a Tax Management System using SQ
     - **Edit User Information:** Allows users to update their phone number, email address, and password.
     - **Add New Tax Entity:** Enables users to add new tax entities (Land Tax, Income Tax, Business Tax) with relevant details and automatically calculates and records the tax amount.
 
-4 **Admin Dashboard:** 
+4. **Admin Dashboard:** 
 - Provides an administrative interface with the following functionalities:
     - **View All Tax Records:** Displays a list of all tax records.
     - **Add New Tax Record:** Allows administrators to add new tax records for different tax types (Land Tax, Income Tax, Business Tax).
@@ -163,7 +163,7 @@ CREATE TABLE BusinessTax (
 ## Project Details
 This project was developed during the 4th semester while pursing B.Sc. in CSE of 2024 as part of the CSE-2211: Database Management Systems-I Lab Course conducted by the National Institute of Textile Engineering and Research-NITER, Constituent Institute of the University of Dhaka, Savar, Dhaka-1350
 
-**Future Enhancements:**
+## Future Enhancements:
 
 *   Develop a user-friendly web interface for better user experience.
 *   Add features like tax calculators and automated tax reminders.
