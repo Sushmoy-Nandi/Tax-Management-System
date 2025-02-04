@@ -17,7 +17,9 @@ sqlquery = """
     PropertyLocation VARCHAR(255), 
     PropertySize DECIMAL(10, 2), 
     PropertyValue DECIMAL(10, 2),
-    TaxPayerNID INT
+    TaxPayerNID INT,
+    FOREIGN KEY (TaxPayerNID) REFERENCES UserSignup(NID)
+
     
 );
 
