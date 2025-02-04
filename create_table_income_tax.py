@@ -17,7 +17,8 @@ sqlquery = """
                 IncomeTaxID INT PRIMARY KEY AUTO_INCREMENT,
                 AnnualIncome DECIMAL(10, 2),  -- Total annual income
                 TaxableIncome DECIMAL(10, 2), -- Portion of the income that is taxable
-                TaxPayerNID INT
+                TaxPayerNID INT,
+                FOREIGN KEY (TaxPayerNID) REFERENCES UserSignup(NID)
             );
 
             """
