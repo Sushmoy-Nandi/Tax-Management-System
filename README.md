@@ -6,17 +6,52 @@
 
 This project demonstrates the implementation of a Tax Management System using SQL. It includes creating and managing tables, performing CRUD operations, and executing advanced SQL queries. The goal is to showcase skills in database design, manipulation, and querying.
 
-![ERD](https://github.com/Sushmoy-Nandi/Tax-Management-System-/blob/main/Tax_Management_System_ERD.png)
+![ERD](https://github.com/Sushmoy-Nandi/Tax-Management-System/blob/main/Tax_Manegement_System_ERD.png)
 
 ## Objectives
 
-1. **Set up the Tax Management System Database**: Create and populate the database `tax_management_system` with tables for Citizen, Address, TaxRates, Tax, TaxPayment, Audit, UserRoles, Users.
+1. **Set up the Tax Management System Database**: Create and populate the database `tax_management_system` with tables for UserSignup, TaxPayers, TaxPayment, LandTax, BusinessTax, IncomeTax.
 2. **CRUD Operations**: Perform Create, Read, Update, and Delete operations on the data.
-3. **CTAS (Create Table As Select)**: Utilize CTAS to create new tables based on query results.
 4. **Search Records**: Search for specific records in the database.
-5. **Export to CSV**: Export the contents of a table to a CSV file for external use.
 
+**Database:**
 
+*   The system utilizes a MySQL database to store user information, tax records, and payment details.
+*   Key tables include:
+    - `UserSignup`: Stores user information (NID, PhoneNumber, Email, HashedPassword)
+    - `TaxPayers`: Stores taxpayer information (TaxPayerID, NID, Name, DOB, Gender, Address, Status)
+    - `TaxPayment`: Stores general tax payment information (TaxID, TaxPayerID, NID, TaxType, TaxAmount, PaidAmount, DueAmount, DueDate)
+    - `LandTax`: Stores specific details for Land Tax (LandTaxID, PropertyLocation, PropertySize, PropertyValue, TaxPayerNID)
+    - `IncomeTax`: Stores specific details for Income Tax (IncomeTaxID, AnnualIncome, TaxableIncome, TaxPayerNID)
+    - `BusinessTax`: Stores specific details for Business Tax (BusinessTaxID, BusinessName, BusinessType, AnnualRevenue, TaxPayerNID)
+
+**Features:**
+
+1. **User Registration:** 
+    - Allows users to register with their NID (National Identification Number), phone number, and email address.
+    - Implements strong password hashing for enhanced security.
+
+2. **User Login:**
+    - Enables users to log in to the system using their NID and password.
+    - Verifies user credentials against the database.
+
+3. **User Dashboard:** 
+- Will allow users to:
+    - **View Tax Status:** Displays the user's tax records with their current status (Paid, Unpaid, Overdue).
+    - **View Payment History:** Shows a history of all tax payments made by the user.
+    - **Edit User Information:** Allows users to update their phone number, email address, and password.
+    - **Add New Tax Entity:** Enables users to add new tax entities (Land Tax, Income Tax, Business Tax) with relevant details and automatically calculates and records the tax amount.
+
+4 **Admin Dashboard:** 
+- Provides an administrative interface with the following functionalities:
+    - **View All Tax Records:** Displays a list of all tax records.
+    - **Add New Tax Record:** Allows administrators to add new tax records for different tax types (Land Tax, Income Tax, Business Tax).
+    - **Edit Tax Record:** Enables administrators to modify existing tax record details. 
+    - **Delete Tax Record:** Allows administrators to delete existing tax records.
+    - **View Tax Payments with Status:** Displays tax payments with their status (Paid, Unpaid, Overdue).
+    - **View All Tax Payers:** Displays a list of all registered taxpayers.
+    - **Search Records:** Allows administrators to search for records across different tables based on specified criteria (table name, column, and search value). 
+        
 ## Project Structure
 
 ### **Database Creation**
@@ -27,18 +62,21 @@ USE tax_management_system;
 
 ### **Table Creation**
 
-1. **Address Table**
+1. **UserSignup Table**
 ```sql
-CREATE TABLE Address (
-    AddressID INT PRIMARY KEY,
-    Street VARCHAR(255),
-    City VARCHAR(100),
-    State VARCHAR(100),
-    PostalCode VARCHAR(20),
-    Country VARCHAR(100)
+CREATE TABLE UserSignup (
+    SignupID INT PRIMARY KEY AUTO_INCREMENT,
+    NID INT,
+    PhoneNumber VARCHAR(20),
+    Email VARCHAR(50),
+    Password VARCHAR(255),  -- Encrypted password
+    SignupStatus VARCHAR(20) DEFAULT 'Pending', -- Pending, Verified, Expired
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                    
 );
 ```
-2. **Citizen Table**
+2. **TaxPayers Table**
 ```sql
 CREATE TABLE Citizen (
     NID INT PRIMARY KEY,
@@ -51,213 +89,86 @@ CREATE TABLE Citizen (
     FOREIGN KEY (AddressID) REFERENCES Address(AddressID) ON DELETE SET NULL
 );
 ```
-3. **TaxRates Table**
-```sql
-CREATE TABLE TaxRates (
-    TaxRateID INT PRIMARY KEY,
-    TaxType VARCHAR(50),
-    RateDescription VARCHAR(255),
-    RatePercentage DECIMAL(5, 2),
-    EffectiveDate DATE,
-    ExpiryDate DATE
-);
-```
-4. **Tax Table**
-```sql
-CREATE TABLE Tax (
-    TaxID INT PRIMARY KEY,
-    NID INT,
-    TaxType VARCHAR(50),
-    TaxDescription TEXT,
-    TaxBaseAmount DECIMAL(10, 2),
-    TaxRateID INT,
-    TaxAmount DECIMAL(10, 2),
-    DueDate DATE,
-    FOREIGN KEY (NID) REFERENCES Citizen(NID) ON DELETE CASCADE,
-    FOREIGN KEY (TaxRateID) REFERENCES TaxRates(TaxRateID) ON DELETE SET NULL
-);
-```
-5. **TaxPayment Table**
+3. **TaxPayment Table**
 ```sql
 CREATE TABLE TaxPayment (
-    PaymentID INT PRIMARY KEY,
-    TaxID INT,
-    PaymentDate DATE,
-    PaymentAmount DECIMAL(10, 2),
-    PaymentMethod VARCHAR(50),
-    FOREIGN KEY (TaxID) REFERENCES Tax(TaxID) ON DELETE CASCADE
+    TaxID INT PRIMARY KEY AUTO_INCREMENT,
+    NID INT NULL,
+    TaxType ENUM('Land Tax', 'Income Tax', 'Business Tax') NOT NULL,  -- Use ENUM for better control over types
+    TaxAmount DECIMAL(10, 2),
+    PaidAmount DECIMAL(10, 2) DEFAULT 0,
+    DueAmount DECIMAL(10, 2) AS (TaxAmount - PaidAmount) STORED,
+    DueDate DATE,
+    FOREIGN KEY (NID) REFERENCES UserSignup(NID) ON DELETE CASCADE
 );
 ```
-6. **UserRoles Table**
+4. **LandTax Table**
 ```sql
-CREATE TABLE UserRoles (
-    RoleID INT PRIMARY KEY,
-    RoleName VARCHAR(50)
+CREATE TABLE LandTax (
+    LandTaxID INT PRIMARY KEY AUTO_INCREMENT,
+    PropertyLocation VARCHAR(255), 
+    PropertySize DECIMAL(10, 2), 
+    PropertyValue DECIMAL(10, 2),
+    TaxPayerNID INT,
+    FOREIGN KEY (TaxPayerNID) REFERENCES UserSignup(NID)
 );
 ```
-7. **Users Table**
+5. **IncomeTax Table**
 ```sql
-CREATE TABLE Users (
-    UserID INT PRIMARY KEY,
-    NID INT,
-    RoleID INT,
-    Username VARCHAR(50) UNIQUE,
-    Password VARCHAR(255),
-    Email VARCHAR(100),
-    FOREIGN KEY (NID) REFERENCES Citizen(NID) ON DELETE CASCADE,
-    FOREIGN KEY (RoleID) REFERENCES UserRoles(RoleID) ON DELETE SET NULL
+ CREATE TABLE IncomeTax (
+    IncomeTaxID INT PRIMARY KEY AUTO_INCREMENT,
+    AnnualIncome DECIMAL(10, 2),  -- Total annual income
+    TaxableIncome DECIMAL(10, 2), -- Portion of the income that is taxable
+    TaxPayerNID INT,
+    FOREIGN KEY (TaxPayerNID) REFERENCES UserSignup(NID)
 );
 ```
-8. **Audit Table**
+6. **BusinessTax Table**
 ```sql
-CREATE TABLE Audit (
-    AuditID INT AUTO_INCREMENT PRIMARY KEY,
-    EntityName VARCHAR(100) NOT NULL,
-    EntityID INT NOT NULL,
-    ChangeDescription TEXT NOT NULL,
-    ChangedBy INT,  -- Assuming it references Users(UserID)
-    ChangeDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (ChangedBy) REFERENCES Users(UserID) ON DELETE SET NULL
+CREATE TABLE BusinessTax (
+    BusinessTaxID INT PRIMARY KEY AUTO_INCREMENT,
+    BusinessName VARCHAR(255),  -- Name of the business
+    BusinessType VARCHAR(100),  -- Type of business (e.g., Retail, Manufacturing)
+    AnnualRevenue DECIMAL(10, 2),  -- Total revenue for the year
+    TaxPayerNID INT,
+    FOREIGN KEY (TaxPayerNID) REFERENCES UserSignup(NID)
 );
 ```
 
-## CRUD Operation
+## Requirements
 
-Below is an example of performing **CRUD (Create, Read, Update, Delete)** operations for the `tax_management_system` database:
+* Python Version 3.13.1
+* MySQL Database
+* `mysql-connector-python` library: `pip install mysql-connector-python`
+* `prettytable` library: `pip install prettytable`
+* `bcrypt` library: `pip install bcrypt`
 
-### **1. CREATE Operation**
-Add a new citizen and their related data in the `Address`, `Citizen`, and `Tax` tables.
+**Dependencies:**
 
-```sql
--- Insert into Address
-INSERT INTO Address (AddressID, Street, City, State, PostalCode, Country)
-VALUES 
-(11, 'New Market Road', 'Dhaka', 'Dhaka Division', '1215', 'Bangladesh');
+*   `mysql-connector-python`: For interacting with the MySQL database.
+*   `bcrypt`: For secure password hashing.
+*   `prettytable`: For generating formatted table outputs.
 
--- Insert into Citizen
-INSERT INTO Citizen (NID, Name, DateOfBirth, Gender, AddressID, PhoneNumber, Email)
-VALUES 
-(111, 'Rafiqul Islam', '1992-05-14', 'Male', 11, '01712345678', 'rafiqulislam@example.com');
+**Installation:**
 
--- Insert into Tax
-INSERT INTO Tax (TaxID, NID, TaxType, TaxDescription, TaxBaseAmount, TaxRateID, TaxAmount, DueDate)
-VALUES 
-(11, 111, 'Income Tax', 'Tax on annual salary', 600000.00, 1, 60000.00, '2024-04-30');
-```
+1.  **Install dependencies:**
+    ```bash
+    pip install mysql-connector-python bcrypt prettytable
+    ```
 
----
+2.  **Configure database connection:** Update the `connect_db()` function in `connect_db.py` with your actual database credentials (host, user, password, database name).
 
-### **2. READ Operation**
-Retrieve specific or all records from various tables.
-
-- Retrieve all citizens from Dhaka:
-```sql
-SELECT c.NID, c.Name, c.Email, a.Street, a.City
-FROM Citizen c
-JOIN Address a ON c.AddressID = a.AddressID
-WHERE a.City = 'Dhaka';
-```
-
-- Retrieve all unpaid taxes with a due date in the future:
-```sql
-SELECT t.TaxID, t.NID, t.TaxType, t.TaxAmount, t.DueDate
-FROM Tax t
-WHERE t.DueDate > CURRENT_DATE;
-```
-
-- Retrieve total taxes paid by a specific citizen:
-```sql
-SELECT c.NID, c.Name, SUM(tp.PaymentAmount) AS TotalTaxPaid
-FROM Citizen c
-JOIN Tax t ON c.NID = t.NID
-JOIN TaxPayment tp ON t.TaxID = tp.TaxID
-WHERE c.NID = 105
-GROUP BY c.NID, c.Name;
-```
-
----
-
-### **3. UPDATE Operation**
-Update details for an existing record.
-
-- Update phone number and email for a citizen:
-```sql
-UPDATE Citizen
-SET PhoneNumber = '01876543210', Email = 'updatedrafiqul@example.com'
-WHERE NID = 111;
-```
-
-- Update tax amount for a specific tax record:
-```sql
-UPDATE Tax
-SET TaxAmount = 65000.00
-WHERE TaxID = 11;
-```
-
-- Extend expiry date for a tax rate:
-```sql
-UPDATE TaxRates
-SET ExpiryDate = '2026-12-31'
-WHERE TaxRateID = 1;
-```
-
----
-
-### **4. DELETE Operation**
-Remove specific records from tables.
-
-- Delete a citizen and their associated taxes:
-```sql
-DELETE FROM Citizen
-WHERE NID = 111;
-```
-> **Note**: `ON DELETE CASCADE` will automatically remove related `Tax` records for the citizen.
-
-- Delete a tax rate that is no longer valid:
-```sql
-DELETE FROM TaxRates
-WHERE TaxRateID = 10;
-```
-
-- Remove a tax payment record:
-```sql
-DELETE FROM TaxPayment
-WHERE PaymentID = 1;
-```
-
----
-
-### Testing the CRUD Operations
-Verify the results of these operations using `SELECT` queries:
-
-- Check if the citizen was added successfully:
-```sql
-SELECT * FROM Citizen WHERE NID = 111;
-```
-
-- Verify the updated tax amount:
-```sql
-SELECT * FROM Tax WHERE TaxID = 11;
-```
-
-- Ensure that the citizen and related taxes were deleted:
-```sql
-SELECT * FROM Citizen WHERE NID = 111;
-SELECT * FROM Tax WHERE NID = 111;
-```
-
-- Confirm if the tax payment record was removed:
-```sql
-SELECT * FROM TaxPayment WHERE PaymentID = 1;
-```
-
+3.  **Run the application:** Execute the `main.py` script to start the system.
 
 ## Project Details
 This project was developed during the 4th semester while pursing B.Sc. in CSE of 2024 as part of the CSE-2211: Database Management Systems-I Lab Course conducted by the National Institute of Textile Engineering and Research-NITER, Constituent Institute of the University of Dhaka, Savar, Dhaka-1350
 
-## Future work
-**Advanced SQL Queries**: Develop complex queries to analyze and retrieve specific data.In Future Its advanced queries and data analytics enable efficient tax collection, ensure accountability, and provide actionable insights for decision-making.
+**Future Enhancements:**
+
+*   Develop a user-friendly web interface for better user experience.
+*   Add features like tax calculators and automated tax reminders.
+*   Improve security measures, such as implementing two-factor authentication.
 
 ## Conclusion
 
-The Tax Management System provides a robust SQL-based framework for managing taxes, payments, and compliance. The Database Management Console provides an efficient and user-friendly way to perform essential database operations through a command-line interface. Its comprehensive menu allows users to create, manage, and manipulate database tables seamlessly. With features like exporting data to CSV and creating tables using queries (CTAS), this tool simplifies complex database tasks for developers, students, and professionals alike. This project demonstrates proficiency in database design, manipulation, and querying, addressing real-world administrative needs.  
+This project successfully implements a basic tax management system with core functionalities for user registration, login, and tax record management. The system effectively utilizes a MySQL database to store and retrieve user and tax-related information.
