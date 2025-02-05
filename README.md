@@ -149,7 +149,9 @@ CREATE TABLE BusinessTax (
 *   `bcrypt`: For secure password hashing.
 *   `prettytable`: For generating formatted table outputs.
 
-**Installation:**
+## Installation:
+
+**Clone the Repository:** `git clone https://github.com/Sushmoy-Nandi/Tax-Management-System.git`
 
 1.  **Install dependencies:**
     ```bash
